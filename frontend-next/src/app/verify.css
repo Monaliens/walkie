@@ -335,6 +335,7 @@
   display: grid;
   gap: 4px;
   max-width: 280px;
+  position: relative;
 }
 
 .mini-cell {

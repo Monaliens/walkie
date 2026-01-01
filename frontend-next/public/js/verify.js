@@ -265,9 +265,15 @@ function displaySeeds(game) {
 function displayGrid(game) {
   const gridEl = document.getElementById('verifyGrid');
   const gridSize = game.grid_size || 5;
-  
-  gridEl.style.gridTemplateColumns = `repeat(${gridSize}, 36px)`;
+  const cellSize = 36;
+  const gap = 4;
+
+  gridEl.style.gridTemplateColumns = `repeat(${gridSize}, ${cellSize}px)`;
   gridEl.innerHTML = '';
+
+  // Remove old path SVG if exists
+  const oldSvg = document.getElementById('pathSvg');
+  if (oldSvg) oldSvg.remove();
 
   const revealedTiles = new Set(game.revealed_tiles || []);
   const bombPositions = new Set(game.bomb_positions || []);
@@ -351,6 +357,67 @@ function displayGrid(game) {
     }
 
     gridEl.appendChild(cell);
+  }
+
+  // Draw path lines between revealed tiles
+  const revealedArray = game.revealed_tiles || [];
+  if (revealedArray.length > 1) {
+    const gridWidth = (cellSize + gap) * gridSize - gap;
+    const gridHeight = gridWidth;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.id = 'pathSvg';
+    svg.setAttribute('width', gridWidth);
+    svg.setAttribute('height', gridHeight);
+    svg.style.position = 'absolute';
+    svg.style.top = '0';
+    svg.style.left = '0';
+    svg.style.pointerEvents = 'none';
+
+    // Calculate center position of a tile
+    const getTileCenter = (tileIndex) => {
+      const col = tileIndex % gridSize;
+      const row = Math.floor(tileIndex / gridSize);
+      const x = col * (cellSize + gap) + cellSize / 2;
+      const y = row * (cellSize + gap) + cellSize / 2;
+      return { x, y };
+    };
+
+    // Draw lines between consecutive tiles (edge to edge, not center to center)
+    const edgeOffset = cellSize / 2 - 2; // Start/end near edge of cell
+
+    for (let i = 0; i < revealedArray.length - 1; i++) {
+      const from = getTileCenter(revealedArray[i]);
+      const to = getTileCenter(revealedArray[i + 1]);
+
+      // Calculate direction vector
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const nx = dx / dist;
+      const ny = dy / dist;
+
+      // Start from edge of first cell, end at edge of second cell
+      const startX = from.x + nx * edgeOffset;
+      const startY = from.y + ny * edgeOffset;
+      const endX = to.x - nx * edgeOffset;
+      const endY = to.y - ny * edgeOffset;
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', startX);
+      line.setAttribute('y1', startY);
+      line.setAttribute('x2', endX);
+      line.setAttribute('y2', endY);
+      line.setAttribute('stroke', '#ff9500');
+      line.setAttribute('stroke-width', '3');
+      line.setAttribute('stroke-linecap', 'round');
+      line.setAttribute('opacity', '0.8');
+      svg.appendChild(line);
+    }
+
+    // Add SVG to grid container
+    gridEl.style.position = 'relative';
+    gridEl.appendChild(svg);
   }
 
   // Grid status with missed rewards info
