@@ -81,6 +81,70 @@ window.initVerify = function initVerify() {
   if (calculateBtn) {
     calculateBtn.addEventListener('click', onCalculateMap);
   }
+
+  // Initialize custom dropdown
+  initPixelDropdown();
+}
+
+// Custom Pixel Dropdown
+function initPixelDropdown() {
+  const dropdown = document.getElementById('gridSizeDropdown');
+  const trigger = document.getElementById('gridSizeTrigger');
+  const menu = document.getElementById('gridSizeMenu');
+  const hiddenInput = document.getElementById('manualGridSize');
+
+  if (!trigger || !menu) {
+    console.log('[Dropdown] Elements not found');
+    return;
+  }
+
+  console.log('[Dropdown] Initializing...');
+
+  // Toggle dropdown on trigger click
+  trigger.onclick = function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const isOpen = menu.classList.contains('open');
+    if (isOpen) {
+      trigger.classList.remove('open');
+      menu.classList.remove('open');
+    } else {
+      trigger.classList.add('open');
+      menu.classList.add('open');
+    }
+  };
+
+  // Select option
+  const options = menu.querySelectorAll('.pixel-dropdown-option');
+  options.forEach(option => {
+    option.onclick = function(e) {
+      e.stopPropagation();
+      const value = this.dataset.value;
+      const text = this.textContent;
+
+      // Update trigger text
+      trigger.querySelector('.pixel-dropdown-value').textContent = text;
+
+      // Update hidden input
+      if (hiddenInput) hiddenInput.value = value;
+
+      // Update selected state
+      options.forEach(opt => opt.classList.remove('selected'));
+      this.classList.add('selected');
+
+      // Close dropdown
+      trigger.classList.remove('open');
+      menu.classList.remove('open');
+    };
+  });
+
+  // Close on outside click
+  document.onclick = function(e) {
+    if (!dropdown.contains(e.target)) {
+      trigger.classList.remove('open');
+      menu.classList.remove('open');
+    }
+  };
 }
 
 async function verifyGame(gameId) {

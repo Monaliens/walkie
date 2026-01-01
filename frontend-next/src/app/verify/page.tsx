@@ -213,11 +213,18 @@ export default function VerifyPage() {
                   </div>
                   <div className="input-group">
                     <label className="input-label">Grid Size</label>
-                    <select id="manualGridSize" className="manual-input small">
-                      <option value="5">5x5</option>
-                      <option value="6">6x6</option>
-                      <option value="7">7x7</option>
-                    </select>
+                    <div className="pixel-dropdown" id="gridSizeDropdown">
+                      <button type="button" className="pixel-dropdown-trigger" id="gridSizeTrigger">
+                        <span className="pixel-dropdown-value">5x5</span>
+                        <span className="pixel-dropdown-arrow">▼</span>
+                      </button>
+                      <div className="pixel-dropdown-menu" id="gridSizeMenu">
+                        <div className="pixel-dropdown-option selected" data-value="5">5x5</div>
+                        <div className="pixel-dropdown-option" data-value="6">6x6</div>
+                        <div className="pixel-dropdown-option" data-value="7">7x7</div>
+                      </div>
+                    </div>
+                    <input type="hidden" id="manualGridSize" value="5" />
                   </div>
                 </div>
                 <button className="btn btn-primary calculate-btn" id="calculateMapBtn">Calculate Map</button>
