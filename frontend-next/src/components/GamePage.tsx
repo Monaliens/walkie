@@ -130,7 +130,7 @@ interface GameState {
 }
 
 // Function to create fresh game state (avoids shared Set/Map references)
-const createInitialGameState = (gridSize = 5, betAmount = '0.1'): GameState => ({
+const createInitialGameState = (gridSize = 5, betAmount = '0.02'): GameState => ({
   gameId: null,
   phase: 'idle',
   gridSize,
@@ -1060,7 +1060,7 @@ export function GamePage() {
                   <span className="suffix">MON</span>
                 </div>
                 <div className="quick-btns">
-                  {['0.1', '0.5', '1', '5'].map((amt) => (
+                  {['0.02', '0.03', '0.04', '0.05'].map((amt) => (
                     <button
                       key={amt}
                       className="btn-quick"
