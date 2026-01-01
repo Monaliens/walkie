@@ -975,12 +975,12 @@ export function GamePage() {
         >
           {isReward && (
             <span className="reward-value">
-              {Number(formatEther(game.tileRewards.get(i)!)).toFixed(2)}
+              {Number(formatEther(game.tileRewards.get(i)!)).toFixed(3)}
             </span>
           )}
           {isMissedReward && (
             <span className="reward-value">
-              {Number(formatEther(game.missedRewards.get(i)!)).toFixed(2)}
+              {Number(formatEther(game.missedRewards.get(i)!)).toFixed(3)}
             </span>
           )}
         </div>
@@ -1014,7 +1014,7 @@ export function GamePage() {
         <div className="wallet-section">
           {isConnected && (
             <div className="balance-display" style={{ marginRight: '10px', fontFamily: 'var(--font-pixel)', fontSize: '10px', color: 'var(--text-gold)' }}>
-              {parseFloat(balance).toFixed(2)} {balanceSymbol}
+              {parseFloat(balance).toFixed(3)} {balanceSymbol}
             </div>
           )}
           <appkit-button size="sm" balance="hide" />
@@ -1134,7 +1134,7 @@ export function GamePage() {
                 </div>
                 <div className="stat-box highlight">
                   <div className="stat-label">Treasure</div>
-                  <div className="stat-value">{Number(formatEther(game.collectedReward)).toFixed(2)}</div>
+                  <div className="stat-value">{Number(formatEther(game.collectedReward)).toFixed(3)}</div>
                 </div>
               </div>
 
@@ -1316,7 +1316,7 @@ export function GamePage() {
                       </a>
                     </div>
                     <div className="history-bet">
-                      {Number(formatEther(BigInt(hgame.bet_amount || '0'))).toFixed(2)}
+                      {Number(formatEther(BigInt(hgame.bet_amount || '0'))).toFixed(3)}
                     </div>
                     <div>
                       <span className={`history-result-badge ${hgame.won ? 'won' : 'lost'}`}>
@@ -1325,7 +1325,7 @@ export function GamePage() {
                     </div>
                     <div className={`history-payout ${hgame.won ? 'won' : 'lost'}`}>
                       {hgame.won ? '+' : '-'}
-                      {Number(formatEther(BigInt(hgame.won ? hgame.payout || '0' : hgame.bet_amount || '0'))).toFixed(2)}
+                      {Number(formatEther(BigInt(hgame.won ? hgame.payout || '0' : hgame.bet_amount || '0'))).toFixed(3)}
                     </div>
                     <div className="history-actions">
                       <Link href={`/verify?gameId=${hgame.game_id}`} className="history-action-btn" title="Verify">
