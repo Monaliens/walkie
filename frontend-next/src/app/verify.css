@@ -542,10 +542,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-align: left;
+}
+
+.accordion-header.always-open {
+  justify-content: center;
+  cursor: default;
 }
 
 .accordion-title {
@@ -901,6 +902,120 @@
 
 .contract-link:hover {
   background: var(--gold-dark);
+}
+
+/* Manual Verification Section */
+.manual-verify-section {
+  margin-top: 24px;
+}
+
+.manual-verify-card {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.manual-verify-card .card-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.manual-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input-row-half {
+  display: flex;
+  gap: 12px;
+}
+
+.input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input-label {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: var(--text-light);
+}
+
+.manual-input {
+  font-family: monospace;
+  font-size: 12px;
+  padding: 10px 12px;
+  background: var(--earth-darkest);
+  border: 2px solid var(--earth-mid);
+  border-radius: 4px;
+  color: var(--text-light);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.manual-input:focus {
+  border-color: var(--cosmic-cyan);
+}
+
+.manual-input.small {
+  width: 100%;
+}
+
+.manual-input::placeholder {
+  color: var(--text-muted);
+}
+
+.calculate-btn {
+  margin-top: 8px;
+  align-self: flex-start;
+}
+
+.manual-results {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 2px solid var(--earth-mid);
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--earth-mid);
+}
+
+.result-row:last-of-type {
+  border-bottom: none;
+}
+
+.result-label {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.result-value {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--cosmic-cyan);
+}
+
+.manual-grid-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--earth-darkest);
+  border-radius: 6px;
 }
 
 /* Footer */

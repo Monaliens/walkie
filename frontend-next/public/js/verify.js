@@ -8,9 +8,9 @@ function getVersion() {
 }
 
 const GRID_CONFIG = {
-  5: { bombs: 3 },
-  6: { bombs: 5 },
-  7: { bombs: 7 }
+  5: { bombs: 3, size: 25 },
+  6: { bombs: 5, size: 36 },
+  7: { bombs: 7, size: 49 }
 };
 
 // Elements
@@ -32,9 +32,7 @@ window.initVerify = function initVerify() {
     verifyBtn: document.getElementById('verifyBtn'),
     loadingState: document.getElementById('loadingState'),
     errorState: document.getElementById('errorState'),
-    resultsSection: document.getElementById('resultsSection'),
-    howItWorksToggle: document.getElementById('howItWorksToggle'),
-    howItWorksContent: document.getElementById('howItWorksContent')
+    resultsSection: document.getElementById('resultsSection')
   };
 
   // Check if elements exist
@@ -65,14 +63,6 @@ window.initVerify = function initVerify() {
     }
   });
 
-  // Accordion toggle
-  if (elements.howItWorksToggle) {
-    elements.howItWorksToggle.addEventListener('click', () => {
-      elements.howItWorksToggle.classList.toggle('open');
-      elements.howItWorksContent.classList.toggle('open');
-    });
-  }
-
   // Copy buttons
   document.querySelectorAll('.copy-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -86,7 +76,11 @@ window.initVerify = function initVerify() {
     });
   });
 
-  // console.log('[Verify] Initialized');
+  // Manual verification button
+  const calculateBtn = document.getElementById('calculateMapBtn');
+  if (calculateBtn) {
+    calculateBtn.addEventListener('click', onCalculateMap);
+  }
 }
 
 async function verifyGame(gameId) {
@@ -111,6 +105,7 @@ async function verifyGame(gameId) {
     displaySeeds(game);
     displayGrid(game);
     displayDetails(game);
+    fillManualVerification(game);
 
     showResults();
   } catch (error) {
@@ -371,4 +366,185 @@ function showError(message) {
 
 function hideError() {
   if (elements.errorState) elements.errorState.classList.add('hidden');
+}
+
+// Manual Verification Functions
+function getAdjacent4Way(tile, gridWidth) {
+  const x = tile % gridWidth;
+  const y = Math.floor(tile / gridWidth);
+  const adjacent = [];
+  if (y > 0) adjacent.push(tile - gridWidth);
+  if (y < gridWidth - 1) adjacent.push(tile + gridWidth);
+  if (x > 0) adjacent.push(tile - 1);
+  if (x < gridWidth - 1) adjacent.push(tile + 1);
+  return adjacent;
+}
+
+function hasPath(start, finish, bombSet, gridWidth) {
+  if (bombSet.has(start) || bombSet.has(finish)) return false;
+  const visited = new Set();
+  const queue = [start];
+  visited.add(start);
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (current === finish) return true;
+    for (const neighbor of getAdjacent4Way(current, gridWidth)) {
+      if (!visited.has(neighbor) && !bombSet.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+  return false;
+}
+
+function calculateMapFromSeeds(vrfSeed, backendSalt, gameId, gridWidth) {
+  const config = GRID_CONFIG[gridWidth] || GRID_CONFIG[5];
+  const totalTiles = config.size;
+  const bombCount = config.bombs;
+
+  // Calculate final seed
+  const finalSeed = ethers.keccak256(
+    ethers.solidityPacked(
+      ['bytes32', 'bytes32', 'uint64', 'bytes32'],
+      [vrfSeed, backendSalt, BigInt(gameId), getVersion()]
+    )
+  );
+
+  // Calculate start tile (bottom row)
+  const bottomRowStart = totalTiles - gridWidth;
+  const startHash = ethers.keccak256(
+    ethers.solidityPacked(['bytes32', 'uint64', 'string', 'bytes32'], [finalSeed, BigInt(gameId), 'start', getVersion()])
+  );
+  const startTile = bottomRowStart + Number(BigInt(startHash) % BigInt(gridWidth));
+
+  // Calculate finish tile (top row)
+  const finishHash = ethers.keccak256(
+    ethers.solidityPacked(['bytes32', 'uint64', 'string', 'bytes32'], [finalSeed, BigInt(gameId), 'finish', getVersion()])
+  );
+  const finishTile = Number(BigInt(finishHash) % BigInt(gridWidth));
+
+  // Calculate bomb positions with nonce
+  let bombSet = new Set();
+  let usedNonce = 0;
+
+  for (let nonce = 0; nonce < 100; nonce++) {
+    const bombs = new Set();
+    const available = [];
+
+    for (let i = 0; i < totalTiles; i++) {
+      if (i !== startTile && i !== finishTile) available.push(i);
+    }
+
+    for (let i = 0; i < bombCount; i++) {
+      const hash = ethers.keccak256(
+        ethers.solidityPacked(
+          ['bytes32', 'uint64', 'string', 'uint8', 'uint8', 'bytes32'],
+          [finalSeed, BigInt(gameId), 'bomb', nonce, i, getVersion()]
+        )
+      );
+      const j = i + Number(BigInt(hash) % BigInt(available.length - i));
+      [available[i], available[j]] = [available[j], available[i]];
+      bombs.add(available[i]);
+    }
+
+    if (hasPath(startTile, finishTile, bombs, gridWidth)) {
+      bombSet = bombs;
+      usedNonce = nonce;
+      break;
+    }
+  }
+
+  return {
+    finalSeed,
+    startTile,
+    finishTile,
+    bombPositions: Array.from(bombSet).sort((a, b) => a - b),
+    nonce: usedNonce
+  };
+}
+
+function displayManualGrid(gridWidth, startTile, finishTile, bombPositions) {
+  const gridEl = document.getElementById('manualGrid');
+  if (!gridEl) return;
+
+  const totalTiles = gridWidth * gridWidth;
+  const bombSet = new Set(bombPositions);
+
+  gridEl.style.gridTemplateColumns = `repeat(${gridWidth}, 36px)`;
+  gridEl.innerHTML = '';
+
+  for (let i = 0; i < totalTiles; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'mini-cell';
+    cell.title = `Tile ${i}`;
+
+    if (i === startTile) {
+      cell.classList.add('start');
+      cell.title = 'Start';
+    } else if (i === finishTile) {
+      cell.classList.add('finish');
+      cell.title = 'Goal';
+    } else if (bombSet.has(i)) {
+      cell.classList.add('trap');
+      cell.title = 'Trap';
+    } else {
+      cell.classList.add('unrevealed');
+    }
+
+    gridEl.appendChild(cell);
+  }
+}
+
+function onCalculateMap() {
+  const vrfSeed = document.getElementById('manualVrfSeed').value.trim();
+  const backendSalt = document.getElementById('manualBackendSalt').value.trim();
+  const gameId = document.getElementById('manualGameId').value.trim();
+  const gridWidth = parseInt(document.getElementById('manualGridSize').value);
+
+  if (!vrfSeed || !backendSalt || !gameId) {
+    alert('Please fill in all fields');
+    return;
+  }
+
+  if (!vrfSeed.startsWith('0x') || vrfSeed.length !== 66) {
+    alert('VRF Seed must be a valid 32-byte hex (0x + 64 chars)');
+    return;
+  }
+
+  if (!backendSalt.startsWith('0x') || backendSalt.length !== 66) {
+    alert('Backend Salt must be a valid 32-byte hex (0x + 64 chars)');
+    return;
+  }
+
+  try {
+    const result = calculateMapFromSeeds(vrfSeed, backendSalt, gameId, gridWidth);
+
+    document.getElementById('manualFinalSeed').textContent = truncateHash(result.finalSeed);
+    document.getElementById('manualFinalSeed').title = result.finalSeed;
+    document.getElementById('manualStartTile').textContent = result.startTile;
+    document.getElementById('manualFinishTile').textContent = result.finishTile;
+    document.getElementById('manualNonce').textContent = result.nonce;
+    document.getElementById('manualBombs').textContent = `[${result.bombPositions.join(', ')}]`;
+
+    displayManualGrid(gridWidth, result.startTile, result.finishTile, result.bombPositions);
+
+    document.getElementById('manualResults').classList.remove('hidden');
+  } catch (err) {
+    alert('Error calculating map: ' + err.message);
+  }
+}
+
+function fillManualVerification(game) {
+  if (!game) return;
+
+  const vrfInput = document.getElementById('manualVrfSeed');
+  const saltInput = document.getElementById('manualBackendSalt');
+  const gameIdInput = document.getElementById('manualGameId');
+  const gridSizeInput = document.getElementById('manualGridSize');
+
+  if (vrfInput && game.vrf_seed) vrfInput.value = game.vrf_seed;
+  if (saltInput && game.backend_salt) saltInput.value = game.backend_salt;
+  if (gameIdInput && game.game_id) gameIdInput.value = game.game_id;
+  if (gridSizeInput && game.grid_size) gridSizeInput.value = game.grid_size.toString();
 }

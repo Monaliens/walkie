@@ -191,13 +191,72 @@ export default function VerifyPage() {
             </div>
           </div>
 
-          {/* How It Works Section (Collapsible) */}
+          {/* Manual Verification Section */}
+          <section className="manual-verify-section">
+            <div className="card manual-verify-card">
+              <h2 className="card-title">Manual Verification</h2>
+              <p className="card-subtitle">Enter seeds to independently calculate the map</p>
+
+              <div className="manual-inputs">
+                <div className="input-row">
+                  <label className="input-label">VRF Seed</label>
+                  <input type="text" id="manualVrfSeed" className="manual-input" placeholder="0x..." />
+                </div>
+                <div className="input-row">
+                  <label className="input-label">Backend Salt</label>
+                  <input type="text" id="manualBackendSalt" className="manual-input" placeholder="0x..." />
+                </div>
+                <div className="input-row-half">
+                  <div className="input-group">
+                    <label className="input-label">Game ID</label>
+                    <input type="number" id="manualGameId" className="manual-input small" placeholder="123" />
+                  </div>
+                  <div className="input-group">
+                    <label className="input-label">Grid Size</label>
+                    <select id="manualGridSize" className="manual-input small">
+                      <option value="5">5x5</option>
+                      <option value="6">6x6</option>
+                      <option value="7">7x7</option>
+                    </select>
+                  </div>
+                </div>
+                <button className="btn btn-primary calculate-btn" id="calculateMapBtn">Calculate Map</button>
+              </div>
+
+              <div id="manualResults" className="manual-results hidden">
+                <div className="result-row">
+                  <span className="result-label">Final Seed</span>
+                  <code className="result-value" id="manualFinalSeed">-</code>
+                </div>
+                <div className="result-row">
+                  <span className="result-label">Start Tile</span>
+                  <span className="result-value" id="manualStartTile">-</span>
+                </div>
+                <div className="result-row">
+                  <span className="result-label">Finish Tile</span>
+                  <span className="result-value" id="manualFinishTile">-</span>
+                </div>
+                <div className="result-row">
+                  <span className="result-label">Nonce Used</span>
+                  <span className="result-value" id="manualNonce">-</span>
+                </div>
+                <div className="result-row">
+                  <span className="result-label">Bomb Positions</span>
+                  <span className="result-value" id="manualBombs">-</span>
+                </div>
+                <div className="manual-grid-container">
+                  <div className="mini-grid" id="manualGrid"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* How It Works Section */}
           <section className="how-it-works-section">
-            <button className="accordion-header" id="howItWorksToggle">
+            <div className="accordion-header always-open">
               <span className="accordion-title">How Provably Fair Works</span>
-              <span className="accordion-icon">+</span>
-            </button>
-            <div className="accordion-content" id="howItWorksContent">
+            </div>
+            <div className="accordion-content open">
               
               {/* Game Flow Sequence Diagram */}
               <div className="flow-section">
