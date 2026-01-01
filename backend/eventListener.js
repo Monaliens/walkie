@@ -323,7 +323,7 @@ class EventListener {
     let pythSeed = null;
 
     if (receipt && receipt.logs) {
-      const ENTROPY_ADDRESS = '0xD458261E832415CFd3BAE5E416FdF3230ce6F134'.toLowerCase();
+      const ENTROPY_ADDRESS = '0x825c0390f379c631f3cf11a82a37d20bddf93c07'.toLowerCase(); // Testnet
       for (const eventLog of receipt.logs) {
         if (eventLog.address.toLowerCase() === ENTROPY_ADDRESS && eventLog.topics.length === 4) {
           pythSeed = '0x' + eventLog.data.slice(2, 66);
