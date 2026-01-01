@@ -1,0 +1,14 @@
+{
+  "network": "monad-testnet",
+  "chainId": 10143,
+  "bombombProxy": "0xB842b4B9d13bBcf5dDd2a47741e6D1610E34D497",
+  "bombombImplementation": "0x436De9506a9576F06c7A868788fa3d5B4b25619e",
+  "entropy": "0x825c0390f379c631f3cf11a82a37d20bddf93c07",
+  "entropyProvider": "0x6CC14824Ea2918f5De5C2f75A9Da968ad4BD6344",
+  "feeRecipient": "0xa7e1aa66eA4f746d4AfBB84DDDa65572622Ad37B",
+  "relayer": "0xa7e1aa66eA4f746d4AfBB84DDDa65572622Ad37B",
+  "minBet": "0.01",
+  "maxBet": "1.0",
+  "entropyFee": "0.108900000000900001",
+  "deployedAt": "2026-01-01T21:10:51.132Z"
+}

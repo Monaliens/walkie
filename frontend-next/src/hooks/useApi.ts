@@ -1,7 +1,7 @@
 'use client'
 
-const API_URL = 'https://walkie.monaliens.xyz/api'
-const WS_URL = 'wss://walkie.monaliens.xyz/ws'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://walkie.monaliens.xyz/api'
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'wss://walkie.monaliens.xyz/ws'
 
 // Session token management
 let sessionToken: string | null = null

@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useWallet } from './useWallet'
 
-const API_URL = 'https://walkie.monaliens.xyz/api'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://walkie.monaliens.xyz/api'
 const SESSION_KEY = 'bombomb_session_token'
 const SESSION_EXPIRES_KEY = 'bombomb_session_expires'
-const CHAIN_ID = 143
+const CHAIN_ID = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '143')
 
 export function useSession() {
   const { address, isConnected, signMessage, isSigningMessage } = useWallet()

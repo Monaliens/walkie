@@ -508,8 +508,8 @@ export default function VerifyPage() {
               {/* Contract Link */}
               <div className="contract-section">
                 <h3 className="section-subtitle">Verify On-Chain</h3>
-                <a href="https://monadvision.com/address/0x7f7B8135d5D4ba22d3acA7f40676Ba9D89FDe731" target="_blank" rel="noopener noreferrer" className="contract-link">
-                  View Contract: 0x7f7B...e731
+                <a href="https://testnet.monadexplorer.com/address/0xB842b4B9d13bBcf5dDd2a47741e6D1610E34D497" target="_blank" rel="noopener noreferrer" className="contract-link">
+                  View Contract: 0xB842...D497
                 </a>
               </div>
             </div>
@@ -517,7 +517,7 @@ export default function VerifyPage() {
         </main>
 
         <footer className="verify-footer">
-          <span className="footer-text">On Monad Mainnet · Powered by Pyth Entropy VRF</span>
+          <span className="footer-text">On Monad Testnet · Powered by Pyth Entropy VRF</span>
         </footer>
       </div>
 

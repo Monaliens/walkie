@@ -25,6 +25,12 @@ module.exports = {
       chainId: 143,
       accounts: [PRIVATE_KEY],
       gasPrice: "auto"
+    },
+    "monad-testnet": {
+      url: "https://monad-testnet.g.alchemy.com/v2/Q-0TaCPvayQJa2UUED-YhA3YkSzajS0R",
+      chainId: 10143,
+      accounts: [PRIVATE_KEY],
+      gasPrice: "auto"
     }
   },
   paths: {

@@ -58,7 +58,8 @@ declare global {
 }
 
 // Contract config
-const CONTRACT_ADDRESS = '0x7f7B8135d5D4ba22d3acA7f40676Ba9D89FDe731' as const
+// Contract address - configurable via env
+const CONTRACT_ADDRESS = (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x7f7B8135d5D4ba22d3acA7f40676Ba9D89FDe731') as `0x${string}`
 
 const CONTRACT_ABI = [
   {
@@ -1231,7 +1232,7 @@ export function GamePage() {
             <h3 className="panel-title">Contract</h3>
             <div style={{ fontSize: '10px', wordBreak: 'break-all' }}>
               <a
-                href={`https://monadvision.com/address/${CONTRACT_ADDRESS}`}
+                href={`https://testnet.monadexplorer.com/address/${CONTRACT_ADDRESS}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ color: 'var(--gold)', textDecoration: 'none' }}
@@ -1240,7 +1241,7 @@ export function GamePage() {
               </a>
             </div>
             <div style={{ fontSize: '9px', marginTop: '4px', opacity: 0.6 }}>
-              On Monad Mainnet · Powered by Pyth Entropy VRF
+              On Monad Testnet · Powered by Pyth Entropy VRF
             </div>
             <Link
               href="/verify"
@@ -1291,7 +1292,7 @@ export function GamePage() {
                     <div><span className="history-grid-badge">{hgame.grid_size || 5}x{hgame.grid_size || 5}</span></div>
                     <div>
                       <a
-                        href={`https://monadvision.com/address/${hgame.player}`}
+                        href={`https://testnet.monadexplorer.com/address/${hgame.player}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="history-player"

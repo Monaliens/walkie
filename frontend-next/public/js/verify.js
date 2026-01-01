@@ -450,7 +450,7 @@ function displayGrid(game) {
 function displayDetails(game) {
   const playerEl = document.getElementById('resultPlayer');
   playerEl.textContent = shortenAddress(game.player);
-  playerEl.href = `https://monadvision.com/address/${game.player}`;
+  playerEl.href = `https://testnet.monadexplorer.com/address/${game.player}`;
 
   document.getElementById('resultSteps').textContent = game.revealed_count || 0;
   

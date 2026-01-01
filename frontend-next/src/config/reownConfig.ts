@@ -1,7 +1,7 @@
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { defineChain } from 'viem'
 
-// Define Monad Mainnet chain - matching Frontend project config
+// Define Monad Mainnet chain
 export const monadMainnet = defineChain({
   id: 143,
   name: 'Monad',
@@ -38,11 +38,41 @@ export const monadMainnet = defineChain({
   testnet: false,
 })
 
+// Define Monad Testnet chain
+export const monadTestnet = defineChain({
+  id: 10143,
+  name: 'Monad Testnet',
+  network: 'monad-testnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'MON',
+    symbol: 'MON',
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://testnet-rpc.monad.xyz'],
+    },
+    public: {
+      http: ['https://testnet-rpc.monad.xyz'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Monad Testnet Explorer',
+      url: 'https://testnet.monadexplorer.com',
+    },
+  },
+  testnet: true,
+})
+
 // Read Project ID from environment variables
 export const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID || ''
 
-// Define supported networks - Monad Mainnet only
-export const networks = [monadMainnet] as any
+// Check if testnet mode
+const isTestnet = process.env.NEXT_PUBLIC_NETWORK === 'testnet'
+
+// Define supported networks based on environment
+export const networks = isTestnet ? [monadTestnet] as any : [monadMainnet] as any
 
 // Create the Wagmi adapter instance
 export const wagmiAdapter = new WagmiAdapter({
