@@ -318,17 +318,29 @@ export default function VerifyPage() {
 
               {/* Algorithm */}
               <div className="algorithm-section">
-                <h3 className="section-subtitle">Final Seed Generation</h3>
+                <h3 className="section-subtitle">Map Generation Algorithm</h3>
                 <div className="code-block">
                   <code>
-                    <span className="comment">// Dual-source randomness - neither party can manipulate</span><br />
+                    <span className="comment">// 1. Final seed from dual-source randomness</span><br />
                     finalSeed = keccak256(vrfSeed + backendSalt + gameId + VERSION)<br /><br />
-                    <span className="comment">// Trap positions via Fisher-Yates shuffle</span><br />
-                    for i = 0 to trapCount:<br />
-                    &nbsp;&nbsp;hash = keccak256(finalSeed + gameId + &quot;mine&quot; + i + VERSION)<br />
-                    &nbsp;&nbsp;j = i + (hash % (gridSize - i))<br />
-                    &nbsp;&nbsp;swap(positions[i], positions[j])<br /><br />
-                    traps = positions[0..trapCount-1]
+                    <span className="comment">// 2. Start tile (bottom row) and finish tile (top row)</span><br />
+                    startHash = keccak256(finalSeed + gameId + &quot;start&quot; + VERSION)<br />
+                    start = bottomRow[startHash % gridWidth]<br />
+                    finishHash = keccak256(finalSeed + gameId + &quot;finish&quot; + VERSION)<br />
+                    finish = topRow[finishHash % gridWidth]<br /><br />
+                    <span className="comment">// 3. Trap positions via Fisher-Yates with path guarantee</span><br />
+                    for nonce = 0 to 100:<br />
+                    &nbsp;&nbsp;for i = 0 to trapCount:<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;hash = keccak256(finalSeed + gameId + &quot;bomb&quot; + nonce + i + VERSION)<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;j = i + (hash % (availableTiles - i))<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;swap(positions[i], positions[j])<br />
+                    &nbsp;&nbsp;traps = positions[0..trapCount-1]<br />
+                    &nbsp;&nbsp;if pathExists(start, finish, traps): break<br /><br />
+                    <span className="comment">// 4. Reward tiles (same Fisher-Yates on remaining tiles)</span><br />
+                    rewardCount = random(minRewards, maxRewards)<br />
+                    for i = 0 to rewardCount:<br />
+                    &nbsp;&nbsp;hash = keccak256(finalSeed + gameId + &quot;rewardPos&quot; + i + VERSION)<br />
+                    &nbsp;&nbsp;// ... same shuffle logic
                   </code>
                 </div>
               </div>
