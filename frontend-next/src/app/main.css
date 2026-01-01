@@ -968,19 +968,47 @@ appkit-button::part(button):active {
     padding: 8px 12px;
   }
 
+  /* Show all columns - stretch to fit */
   .history-table-header,
   .history-row {
-    grid-template-columns: 50px 60px 60px 36px;
+    display: grid !important;
+    grid-template-columns: 40px 1fr 44px 50px 50px 28px !important;
     gap: 6px;
     padding: 8px 10px;
+    align-items: center;
   }
 
   .history-table-header {
-    font-size: 9px;
+    font-size: 8px;
+  }
+
+  .history-table-header > div,
+  .history-row > div {
+    text-align: left;
+  }
+
+  /* Specific column alignments */
+  .th-bet, .history-bet,
+  .th-payout, .history-payout {
+    text-align: right !important;
+  }
+
+  .th-result, .history-row > div:nth-child(4) {
+    text-align: center !important;
+  }
+
+  .th-action, .history-actions {
+    text-align: right !important;
   }
 
   .history-row {
-    font-size: 11px;
+    font-size: 10px;
+  }
+
+  .history-player {
+    font-size: 9px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .history-grid-badge {
@@ -990,11 +1018,16 @@ appkit-button::part(button):active {
 
   .history-bet {
     font-size: 11px;
+    text-align: center;
   }
 
   .history-result-badge {
     font-size: 8px;
     padding: 2px 6px;
+  }
+
+  .history-actions {
+    justify-content: flex-end;
   }
 
   .history-action-btn {
@@ -1006,13 +1039,6 @@ appkit-button::part(button):active {
   .history-action-btn svg {
     width: 16px;
     height: 16px;
-  }
-
-  .th-player,
-  .history-player,
-  .th-payout,
-  .history-payout {
-    display: none;
   }
 
   .history-pagination {
