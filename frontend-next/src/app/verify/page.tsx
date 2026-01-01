@@ -251,6 +251,10 @@ export default function VerifyPage() {
                   <span className="result-label">Bomb Positions</span>
                   <span className="result-value" id="manualBombs">-</span>
                 </div>
+                <div className="result-row">
+                  <span className="result-label">Reward Tiles</span>
+                  <span className="result-value reward-list" id="manualRewards">-</span>
+                </div>
                 <div className="manual-grid-container">
                   <div className="mini-grid" id="manualGrid"></div>
                 </div>

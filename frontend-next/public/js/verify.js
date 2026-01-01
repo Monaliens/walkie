@@ -8,10 +8,14 @@ function getVersion() {
 }
 
 const GRID_CONFIG = {
-  5: { bombs: 3, size: 25 },
-  6: { bombs: 5, size: 36 },
-  7: { bombs: 7, size: 49 }
+  5: { bombs: 3, size: 25, minRewards: 5, maxRewards: 8 },
+  6: { bombs: 5, size: 36, minRewards: 7, maxRewards: 10 },
+  7: { bombs: 7, size: 49, minRewards: 10, maxRewards: 14 }
 };
+
+// Reward tiers (basis points: 1000 = 0.1x)
+const REWARD_TIERS = [1000, 2000, 5000, 10000, 20000, 50000, 100000];
+const TIER_THRESHOLDS = [3500, 6000, 8000, 9200, 9700, 9950, 10000];
 
 // Elements
 let elements = {};
@@ -462,6 +466,65 @@ function hasPath(start, finish, bombSet, gridWidth) {
   return false;
 }
 
+/**
+ * Get reward count for this game
+ */
+function getRewardCount(finalSeed, gameId, gridWidth) {
+  const config = GRID_CONFIG[gridWidth] || GRID_CONFIG[5];
+  const hash = ethers.keccak256(
+    ethers.solidityPacked(['bytes32', 'uint64', 'string', 'bytes32'], [finalSeed, BigInt(gameId), 'rewardCount', getVersion()])
+  );
+  const range = config.maxRewards - config.minRewards;
+  return config.minRewards + Number(BigInt(hash) % BigInt(range + 1));
+}
+
+/**
+ * Calculate reward tile positions
+ */
+function getRewardPositions(finalSeed, gameId, bombSet, startTile, finishTile, gridWidth) {
+  const config = GRID_CONFIG[gridWidth] || GRID_CONFIG[5];
+  const rewardCount = getRewardCount(finalSeed, gameId, gridWidth);
+
+  // Build array of available tiles for rewards
+  const available = [];
+  for (let i = 0; i < config.size; i++) {
+    if (i !== startTile && i !== finishTile && !bombSet.has(i)) {
+      available.push(i);
+    }
+  }
+
+  // Fisher-Yates to select reward positions
+  const actualRewardCount = Math.min(rewardCount, available.length);
+  for (let i = 0; i < actualRewardCount; i++) {
+    const hash = ethers.keccak256(
+      ethers.solidityPacked(['bytes32', 'uint64', 'string', 'uint8', 'bytes32'], [finalSeed, BigInt(gameId), 'rewardPos', i, getVersion()])
+    );
+    const j = i + Number(BigInt(hash) % BigInt(available.length - i));
+    [available[i], available[j]] = [available[j], available[i]];
+  }
+
+  return available.slice(0, actualRewardCount);
+}
+
+/**
+ * Get reward tier multiplier string for a tile
+ */
+function getTileRewardTier(finalSeed, gameId, tileIndex) {
+  const hash = ethers.keccak256(
+    ethers.solidityPacked(['bytes32', 'uint64', 'string', 'uint8', 'bytes32'], [finalSeed, BigInt(gameId), 'reward', tileIndex, getVersion()])
+  );
+  const roll = Number(BigInt(hash) % 10000n);
+
+  // Return multiplier string based on tier
+  const multipliers = ['0.1x', '0.2x', '0.5x', '1x', '2x', '5x', '10x'];
+  for (let i = 0; i < 7; i++) {
+    if (roll < TIER_THRESHOLDS[i]) {
+      return multipliers[i];
+    }
+  }
+  return multipliers[6];
+}
+
 function calculateMapFromSeeds(vrfSeed, backendSalt, gameId, gridWidth) {
   const config = GRID_CONFIG[gridWidth] || GRID_CONFIG[5];
   const totalTiles = config.size;
@@ -519,21 +582,37 @@ function calculateMapFromSeeds(vrfSeed, backendSalt, gameId, gridWidth) {
     }
   }
 
+  // Calculate reward positions
+  const rewardPositions = getRewardPositions(finalSeed, gameId, bombSet, startTile, finishTile, gridWidth);
+
+  // Get reward tier for each reward position
+  const rewardTiles = rewardPositions.map(pos => ({
+    position: pos,
+    tier: getTileRewardTier(finalSeed, gameId, pos)
+  })).sort((a, b) => a.position - b.position);
+
   return {
     finalSeed,
     startTile,
     finishTile,
     bombPositions: Array.from(bombSet).sort((a, b) => a - b),
-    nonce: usedNonce
+    nonce: usedNonce,
+    rewardTiles
   };
 }
 
-function displayManualGrid(gridWidth, startTile, finishTile, bombPositions) {
+function displayManualGrid(gridWidth, startTile, finishTile, bombPositions, rewardTiles) {
   const gridEl = document.getElementById('manualGrid');
   if (!gridEl) return;
 
   const totalTiles = gridWidth * gridWidth;
   const bombSet = new Set(bombPositions);
+
+  // Build reward map: position -> tier
+  const rewardMap = new Map();
+  if (rewardTiles) {
+    rewardTiles.forEach(r => rewardMap.set(r.position, r.tier));
+  }
 
   gridEl.style.gridTemplateColumns = `repeat(${gridWidth}, 36px)`;
   gridEl.innerHTML = '';
@@ -552,8 +631,12 @@ function displayManualGrid(gridWidth, startTile, finishTile, bombPositions) {
     } else if (bombSet.has(i)) {
       cell.classList.add('trap');
       cell.title = 'Trap';
+    } else if (rewardMap.has(i)) {
+      cell.classList.add('reward-missed');
+      cell.textContent = rewardMap.get(i);
+      cell.title = `Reward: ${rewardMap.get(i)}`;
     } else {
-      cell.classList.add('unrevealed');
+      cell.classList.add('safe');
     }
 
     gridEl.appendChild(cell);
@@ -591,7 +674,11 @@ function onCalculateMap() {
     document.getElementById('manualNonce').textContent = result.nonce;
     document.getElementById('manualBombs').textContent = `[${result.bombPositions.join(', ')}]`;
 
-    displayManualGrid(gridWidth, result.startTile, result.finishTile, result.bombPositions);
+    // Display reward positions with tiers as array
+    const rewardText = result.rewardTiles.map(r => `${r.position}(${r.tier})`).join(', ');
+    document.getElementById('manualRewards').textContent = `[${rewardText}]` || 'None';
+
+    displayManualGrid(gridWidth, result.startTile, result.finishTile, result.bombPositions, result.rewardTiles);
 
     document.getElementById('manualResults').classList.remove('hidden');
   } catch (err) {

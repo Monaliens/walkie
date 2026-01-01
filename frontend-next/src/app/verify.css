@@ -13,7 +13,7 @@
 .verify-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 12px 24px;
   background: var(--wood-dark);
   border-bottom: 3px solid var(--wood-mid);
@@ -1282,6 +1282,11 @@
   font-family: monospace;
   font-size: 12px;
   color: var(--cosmic-cyan);
+}
+
+.result-value.reward-list {
+  color: var(--text-gold);
+  text-align: right;
 }
 
 .manual-grid-container {
