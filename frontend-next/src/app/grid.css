@@ -1,0 +1,422 @@
+/* =================================
+   BOMBOMB V3 - Purple Space King Theme
+   5x5 Path Game Grid
+================================= */
+
+/* ===== GRID WRAPPER ===== */
+.grid-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* ===== GAME GRID ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, var(--cell-size)); /* V3: 5 columns */
+  gap: var(--cell-gap);
+  padding: var(--grid-padding);
+  background: var(--space-darkest);
+  border: var(--pixel-border) solid var(--panel-mid);
+  border-top-color: var(--panel-light);
+  border-left-color: var(--panel-light);
+  box-shadow: 4px 4px 0 #000;
+}
+
+/* ===== TILE BASE ===== */
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.1s;
+  border: 2px solid;
+}
+
+.cell:active:not(.disabled) {
+  transform: scale(0.95);
+}
+
+/* ===== BUSH (Hidden/Unrevealed) ===== */
+.cell.bush {
+  background: url('/assets/sprites/king/tile_unrevealed.png') center/cover no-repeat;
+  border-color: var(--space-mid);
+  border-top-color: var(--space-light);
+  border-left-color: var(--space-light);
+}
+
+.cell.bush:hover:not(.disabled) {
+  filter: brightness(1.2);
+  box-shadow: 0 0 8px var(--cosmic-purple);
+}
+
+.cell.bush.adjacent {
+  animation: adjacent-glow 1s ease-in-out infinite;
+  border-color: var(--gold);
+}
+
+@keyframes adjacent-glow {
+  0%, 100% { box-shadow: 0 0 4px var(--gold-glow); }
+  50% { box-shadow: 0 0 12px var(--gold-glow); }
+}
+
+/* ===== GRASS (Safe/Empty) ===== */
+.cell.grass {
+  background: url('/assets/sprites/king/tile_safe.png') center/cover no-repeat;
+  border-color: var(--cosmic-cyan);
+  border-top-color: var(--cosmic-cyan);
+  border-left-color: var(--cosmic-cyan);
+  cursor: pointer;
+  box-shadow: 0 0 4px var(--safe-glow);
+}
+
+.cell.grass.visited {
+  opacity: 0.8;
+}
+
+.cell.grass.visited:hover {
+  opacity: 1;
+}
+
+/* ===== CURRENT (King position) ===== */
+.cell.current {
+  background: url('/assets/sprites/king/tile_safe.png') center/cover no-repeat;
+  border-color: var(--gold);
+  box-shadow: 0 0 8px var(--gold-glow);
+  cursor: default;
+}
+
+/* ===== START TILE (Bottom Row) ===== */
+.cell.start-tile {
+  border-color: var(--safe);
+  box-shadow: 0 0 6px var(--safe-glow);
+}
+
+.cell.start-tile::before {
+  content: 'START';
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-pixel);
+  font-size: 5px;
+  color: var(--safe);
+  white-space: nowrap;
+}
+
+/* ===== FINISH TILE (Top Row) ===== */
+.cell.finish-tile {
+  border-color: var(--cosmic-magenta) !important;
+  box-shadow: 0 0 8px rgba(255, 0, 255, 0.5);
+  animation: finish-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes finish-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(255, 0, 255, 0.5); }
+  50% { box-shadow: 0 0 14px rgba(255, 0, 255, 0.8); }
+}
+
+.cell .finish-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+}
+
+/* Finish marker on unrevealed tile */
+.cell.bush.finish-marker {
+  border-color: var(--cosmic-magenta);
+}
+
+.cell.bush.finish-marker::after {
+  content: '!';
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: var(--cosmic-magenta);
+  text-shadow: 0 0 4px rgba(255, 0, 255, 0.8);
+}
+
+/* ===== START/FINISH AREA (Idle state) ===== */
+.cell.idle.start-area {
+  opacity: 0.8;
+  border-color: var(--safe-dark);
+}
+
+.cell.idle.finish-area {
+  opacity: 0.8;
+  border-color: var(--cosmic-magenta);
+}
+
+/* ===== REWARD ===== */
+.cell.reward {
+  background: url('/assets/sprites/king/tile_treasure.png') center/cover no-repeat;
+  border-color: var(--gold);
+  animation: reward-shine 1.5s ease-in-out infinite;
+}
+
+@keyframes reward-shine {
+  0%, 100% { box-shadow: 0 0 4px var(--gold-glow); }
+  50% { box-shadow: 0 0 12px var(--gold-glow); }
+}
+
+.cell.reward .reward-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+}
+
+.cell.reward .reward-value {
+  position: absolute;
+  bottom: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  color: var(--gold);
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* Reward tiers */
+.cell.reward-common { border-color: #c0c0c0; }
+.cell.reward-uncommon { border-color: var(--cosmic-cyan); }
+.cell.reward-rare { border-color: #4169e1; }
+.cell.reward-epic { border-color: var(--cosmic-purple); }
+.cell.reward-legendary {
+  border-color: #ffd700;
+  animation: legendary-glow 0.8s ease-in-out infinite;
+}
+
+@keyframes legendary-glow {
+  0%, 100% { box-shadow: 0 0 8px #ffd700; }
+  50% { box-shadow: 0 0 20px #ffd700; }
+}
+
+/* ===== TRAP ===== */
+.cell.trap {
+  background: url('/assets/sprites/king/tile_trap.png') center/cover no-repeat;
+  border-color: var(--danger);
+  animation: trap-shake 0.3s ease-in-out;
+}
+
+@keyframes trap-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+.cell.trap .trap-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+}
+
+/* Revealed traps (game over) */
+.cell.trap-reveal {
+  background: url('/assets/sprites/king/tile_trap.png') center/cover no-repeat;
+  border-color: var(--danger);
+}
+
+.cell.trap-reveal .trap-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  opacity: 0.9;
+}
+
+/* Missed rewards (game over - not collected) */
+.cell.reward-missed {
+  background: url('/assets/sprites/king/tile_treasure.png') center/cover no-repeat;
+  border-color: var(--gold-dark);
+  opacity: 0.5;
+}
+
+.cell.reward-missed .reward-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  font-size: 24px;
+  opacity: 0.7;
+}
+
+.cell.reward-missed .reward-value {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: var(--gold);
+  text-shadow: 1px 1px 0 #000;
+  opacity: 0.8;
+}
+
+/* Finish tile reveal (game over) */
+.cell.finish-reveal {
+  background: rgba(255, 0, 255, 0.2);
+  border-color: var(--cosmic-magenta);
+}
+
+.cell.finish-reveal .finish-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  opacity: 0.7;
+}
+
+/* Faded bush (game over - empty unrevealed) */
+.cell.bush.faded {
+  opacity: 0.4;
+}
+
+/* ===== IDLE (Before game) ===== */
+.cell.idle {
+  background: var(--space-dark);
+  border-color: var(--panel-dark);
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* ===== DISABLED ===== */
+.cell.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ===== KING SPRITE ===== */
+/* NEW HD Sprites: ~378x377 per frame, scaled to 64x64 display */
+/* King_Idle: 1856x1840 (4x4), King_Walk: 2272x1508 (6x4), King_Death: 2268x1508 (6x4) */
+
+.fox, .king {
+  position: absolute;
+  width: var(--king-size);
+  height: var(--king-size);
+  background-repeat: no-repeat;
+  z-index: 100;
+  pointer-events: none;
+  transition: left 0.15s ease-out, top 0.15s ease-out;
+  /* Optimize for animation - prevent flickering */
+  will-change: background-position, transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* King Idle - 1856x1840 HD sprite, 4 frames x 4 rows */
+/* Display: 256x256 total (64x64 per frame) */
+.fox.idle, .king.idle {
+  background-image: url('/assets/sprites/king/King_Idle.png');
+  background-size: 256px 256px;
+  animation: king-idle 0.6s steps(4) infinite;
+}
+
+/* King Walk - 2272x1508 HD sprite, 6 frames x 4 rows */
+/* Display: 384x256 total (64x64 per frame) */
+.fox.walking, .king.walking {
+  background-image: url('/assets/sprites/king/King_Walk.png');
+  background-size: 384px 256px;
+  animation: king-walk 0.5s steps(6) infinite;
+}
+
+/* King Hurt - same as idle with shake */
+.fox.hurt, .king.hurt {
+  background-image: url('/assets/sprites/king/King_Idle.png');
+  background-size: 256px 256px;
+  animation: king-hurt 0.3s steps(4);
+}
+
+/* King Death - 2268x1508 HD sprite, 6 frames x 4 rows */
+.fox.death, .king.death {
+  background-image: url('/assets/sprites/king/King_Death.png');
+  background-size: 384px 256px;
+  animation: king-death 0.8s steps(6) forwards;
+}
+
+/* Sprite Animations */
+@keyframes king-idle {
+  from { background-position-x: 0; }
+  to { background-position-x: -256px; }
+}
+
+@keyframes king-walk {
+  from { background-position-x: 0; }
+  to { background-position-x: -384px; }
+}
+
+@keyframes king-hurt {
+  0% { background-position-x: 0; transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { background-position-x: -128px; transform: translateX(3px); }
+  75% { transform: translateX(-3px); }
+  100% { background-position-x: -256px; transform: translateX(0); }
+}
+
+@keyframes king-death {
+  from { background-position-x: 0; }
+  to { background-position-x: -384px; }
+}
+
+/* King/Fox Directions - each row is 64px (32px scaled 2x) */
+.fox.dir-down, .king.dir-down { background-position-y: 0; }
+.fox.dir-up, .king.dir-up { background-position-y: -64px; }
+.fox.dir-left, .king.dir-left { background-position-y: -128px; }
+.fox.dir-right, .king.dir-right { background-position-y: -192px; }
+
+/* ===== GRID STATES ===== */
+.grid.game-won {
+  animation: grid-win 0.5s ease-in-out 3;
+}
+
+@keyframes grid-win {
+  0%, 100% { box-shadow: 4px 4px 0 #000, 0 0 10px var(--safe-glow); }
+  50% { box-shadow: 4px 4px 0 #000, 0 0 25px var(--safe-glow); }
+}
+
+.grid.game-lost {
+  animation: grid-lose 0.4s ease-in-out;
+}
+
+@keyframes grid-lose {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* Game over reveal animation */
+.cell.reveal-pop {
+  animation: reveal-pop 0.3s ease-out forwards;
+}
+
+@keyframes reveal-pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  70% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 500px) {
+  .cell.reward .reward-icon,
+  .cell.trap .trap-icon,
+  .cell .finish-icon {
+    font-size: 18px;
+  }
+
+  .cell.reward .reward-value {
+    font-size: 5px;
+  }
+
+  .cell.start-tile::before {
+    font-size: 4px;
+    bottom: -14px;
+  }
+}

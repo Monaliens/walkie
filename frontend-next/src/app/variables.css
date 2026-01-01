@@ -1,0 +1,76 @@
+/* =================================
+   BOMBOMB - Purple Space King Theme
+================================= */
+
+:root {
+  /* Space Palette */
+  --space-darkest: #0a0a1a;
+  --space-dark: #1a0a2e;
+  --space-mid: #2d1b4e;
+  --space-light: #4a2d6e;
+  --space-glow: #6a4d8e;
+
+  /* Cosmic Accents */
+  --cosmic-cyan: #00ffff;
+  --cosmic-magenta: #ff00ff;
+  --cosmic-purple: #9966ff;
+  --cosmic-pink: #ff66ff;
+
+  /* UI Panels (dark purple) */
+  --panel-dark: #1a0a2e;
+  --panel-mid: #2d1b4e;
+  --panel-light: #4a2d6e;
+  --panel-highlight: #6a4d8e;
+  --panel-border: #9966ff;
+
+  /* Accent Colors */
+  --gold: #ffd700;
+  --gold-dark: #cc9900;
+  --gold-glow: rgba(255, 215, 0, 0.5);
+
+  --danger: #ff4444;
+  --danger-dark: #cc2222;
+  --danger-glow: rgba(255, 68, 68, 0.5);
+
+  --safe: #00ffff;
+  --safe-dark: #00cccc;
+  --safe-glow: rgba(0, 255, 255, 0.5);
+
+  /* Text */
+  --text-light: #e0d0ff;
+  --text-gold: #ffd700;
+  --text-cyan: #00ffff;
+  --text-shadow: 2px 2px 0px #000;
+
+  /* Grid Settings */
+  --cell-size: 72px;
+  --cell-gap: 4px;
+  --grid-padding: 12px;
+
+  /* King Sprite (32x32 per frame, scaled 2x) */
+  --sprite-size: 32px;
+  --sprite-scale: 2;
+  --king-size: 64px;
+
+  /* Pixel Border */
+  --pixel-border: 3px;
+
+  /* Fonts */
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-main: 'VT323', monospace;
+
+  /* Legacy aliases for compatibility */
+  --forest-darkest: var(--space-darkest);
+  --forest-dark: var(--space-dark);
+  --forest-mid: var(--space-mid);
+  --forest-light: var(--space-light);
+  --forest-grass: var(--space-glow);
+  --earth-dark: var(--panel-dark);
+  --earth-mid: var(--panel-mid);
+  --earth-light: var(--panel-light);
+  --wood-dark: var(--panel-dark);
+  --wood-mid: var(--panel-mid);
+  --wood-light: var(--panel-light);
+  --wood-highlight: var(--panel-highlight);
+  --fox-size: var(--king-size);
+}

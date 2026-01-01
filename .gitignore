@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# Claude instructions (personal)
+CLAUDE.md
+
+# Hardhat
+artifacts/
+cache/
+typechain-types/
+
+# OpenZeppelin
+.openzeppelin/
+
+# Testing
+coverage/
+coverage.json
+
+# Production
+build/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Backend
+backend/node_modules/
+backend/artifacts/
+
+# Asset packs (large files)
+craftpix-net-*/
+
+# PM2 (uncomment if needed)
+# ecosystem.config.js
+
+# Deployment info (optional - remove if you want to track)
+# deployment.json

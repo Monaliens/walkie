@@ -1,0 +1,25 @@
+{
+  "name": "bombomb",
+  "version": "1.0.0",
+  "description": "Bombomb - Grid Adventure Game on Monad",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy": "hardhat run scripts/deploy.js --network monad",
+    "verify": "hardhat verify --network monad",
+    "test": "hardhat test",
+    "backend": "cd backend && npm start",
+    "backend:dev": "cd backend && npm run dev"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.0.1",
+    "@openzeppelin/contracts-upgradeable": "^5.0.1",
+    "@openzeppelin/hardhat-upgrades": "^3.0.0",
+    "@pythnetwork/entropy-sdk-solidity": "^1.0.0",
+    "dotenv": "^16.3.1",
+    "hardhat": "^2.19.4"
+  },
+  "dependencies": {
+    "viem": "^2.43.3"
+  }
+}
