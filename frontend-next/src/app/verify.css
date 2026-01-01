@@ -13,7 +13,7 @@
 .verify-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 12px 24px;
   background: var(--wood-dark);
   border-bottom: 3px solid var(--wood-mid);
@@ -31,8 +31,37 @@
 .verify-header .logo {
   text-decoration: none;
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  align-items: baseline;
   gap: 8px;
+}
+
+.verify-header .logo-link {
+  text-decoration: none;
+}
+
+.verify-header .logo-text {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--text-gold);
+  text-shadow: var(--text-shadow);
+  letter-spacing: 2px;
+}
+
+.verify-header .logo-text .accent {
+  color: var(--text-gold);
+}
+
+.verify-header .logo-subtitle {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--cosmic-purple);
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.verify-header .logo-subtitle:hover {
+  color: var(--cosmic-magenta);
 }
 
 .header-badge {
