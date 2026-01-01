@@ -78,8 +78,8 @@ export const api = {
     return fetchWithSession('/entropy-fee')
   },
 
-  getRecentGames: async (limit: number = 10) => {
-    return fetchWithSession(`/games/recent?limit=${limit}`)
+  getRecentGames: async (limit: number = 10, offset: number = 0) => {
+    return fetchWithSession(`/games/recent?limit=${limit}&offset=${offset}`)
   },
 
   getPlayerGames: async (address: string, limit: number = 10, offset: number = 0) => {
@@ -90,6 +90,11 @@ export const api = {
 // WebSocket management
 let ws: WebSocket | null = null
 let wsListeners: Map<string, (data: any) => void> = new Map()
+let recentGameCallback: (() => void) | null = null
+
+export function setRecentGameCallback(callback: (() => void) | null) {
+  recentGameCallback = callback
+}
 
 export function connectWebSocket() {
   if (ws?.readyState === WebSocket.OPEN) return
@@ -103,6 +108,10 @@ export function connectWebSocket() {
   ws.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data)
+      // Handle recentGame globally
+      if (data.type === 'recentGame' && recentGameCallback) {
+        recentGameCallback()
+      }
       wsListeners.forEach((callback) => callback(data))
     } catch (e) {
       // Ignore parse errors

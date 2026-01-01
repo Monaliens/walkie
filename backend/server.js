@@ -982,8 +982,9 @@ app.get('/api/games/player/:address', async (req, res) => {
 app.get('/api/games/recent', async (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit) || 20, 100);
-    const { games, total } = await db.getRecentGames(limit, 0);
-    res.json({ success: true, games, total });
+    const offset = parseInt(req.query.offset) || 0;
+    const { games, total } = await db.getRecentGames(limit, offset);
+    res.json({ success: true, games, total, pagination: { limit, offset, hasMore: offset + games.length < total } });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

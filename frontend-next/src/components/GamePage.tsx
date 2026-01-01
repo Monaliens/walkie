@@ -16,7 +16,7 @@ const SPRITE_IMAGES = [
   '/assets/sprites/king/tile_trap.png',
 ]
 import { useSession } from '@/hooks/useSession'
-import { api, connectWebSocket, subscribeToGame, unsubscribeFromGame, setSessionToken } from '@/hooks/useApi'
+import { api, connectWebSocket, subscribeToGame, unsubscribeFromGame, setSessionToken, setRecentGameCallback } from '@/hooks/useApi'
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { parseEther, formatEther } from 'viem'
 
@@ -209,25 +209,35 @@ export function GamePage() {
   }, [])
 
   // Load history
-  useEffect(() => {
-    const loadHistory = async () => {
-      try {
-        let response
-        if (historyTab === 'my' && address) {
-          response = await api.getPlayerGames(address, 10, (historyPage - 1) * 10)
-        } else {
-          response = await api.getRecentGames(10)
-        }
-
-        if (response.success) {
-          setHistoryGames(response.games || [])
-        }
-      } catch (e) {
-        // console.error('Failed to load history:', e)
+  const loadHistory = useCallback(async () => {
+    try {
+      let response
+      const offset = (historyPage - 1) * 10
+      if (historyTab === 'my' && address) {
+        response = await api.getPlayerGames(address, 10, offset)
+      } else {
+        response = await api.getRecentGames(10, offset)
       }
+
+      if (response.success) {
+        setHistoryGames(response.games || [])
+      }
+    } catch (e) {
+      // console.error('Failed to load history:', e)
     }
-    loadHistory()
   }, [historyTab, historyPage, address])
+
+  useEffect(() => {
+    loadHistory()
+  }, [loadHistory])
+
+  // Live update history when new game completes
+  useEffect(() => {
+    if (historyPage === 1) {
+      setRecentGameCallback(() => loadHistory())
+      return () => setRecentGameCallback(null)
+    }
+  }, [historyPage, loadHistory])
 
   // Load existing game on connect
   useEffect(() => {
