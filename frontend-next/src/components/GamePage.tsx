@@ -15,6 +15,34 @@ const SPRITE_IMAGES = [
   '/assets/sprites/king/tile_treasure.png',
   '/assets/sprites/king/tile_trap.png',
 ]
+
+// Sound effects - preload on init
+const SOUNDS: Record<string, HTMLAudioElement | null> = {}
+
+if (typeof window !== 'undefined') {
+  const soundFiles = {
+    start: '/assets/sounds/start.mp3',
+    walk: '/assets/sounds/walk.mp3',
+    safePrize: '/assets/sounds/safe-prize.mp3',
+    win: '/assets/sounds/win.mp3',
+    gameOver: '/assets/sounds/game-over.mp3',
+  }
+  Object.entries(soundFiles).forEach(([key, src]) => {
+    const audio = new Audio(src)
+    audio.preload = 'auto'
+    audio.load()
+    SOUNDS[key] = audio
+  })
+}
+
+const playSound = (sound: string) => {
+  const audio = SOUNDS[sound]
+  if (audio) {
+    audio.currentTime = 0
+    audio.volume = 0.5
+    audio.play().catch(() => {})
+  }
+}
 import { useSession } from '@/hooks/useSession'
 import { api, connectWebSocket, subscribeToGame, unsubscribeFromGame, setSessionToken, setRecentGameCallback } from '@/hooks/useApi'
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
@@ -373,6 +401,7 @@ export function GamePage() {
       }
     })
     showStatus('Find the exit! Collect treasure on the way!', 'success')
+    playSound('start')
   }, [showStatus])
 
   // Finish reached - auto win
@@ -396,6 +425,7 @@ export function GamePage() {
 
     const payoutMON = parseFloat(formatEther(BigInt(data.payout)))
     showStatus(`Escaped with ${payoutMON.toFixed(4)} MON!`, 'success')
+    playSound('win')
 
     setTimeout(() => {
       showGameOver(true)
@@ -462,6 +492,7 @@ export function GamePage() {
       setGame(prev => {
         const payoutMON = parseFloat(formatEther(BigInt(prev.payout)))
         showStatus(`Victory! +${payoutMON.toFixed(4)} MON`, 'success')
+        playSound('win')
         return prev
       })
     } else {
@@ -639,6 +670,7 @@ export function GamePage() {
 
           const rewardMON = parseFloat(formatEther(reward))
           showStatus(`Found ${rewardMON.toFixed(4)} MON treasure!`, 'success')
+          playSound('safePrize')
 
           return {
             ...prev,
@@ -655,6 +687,7 @@ export function GamePage() {
           const newEmptyTiles = new Set(prev.emptyTiles)
           newEmptyTiles.add(tileIndex)
           showStatus('Safe path! Keep going...', '')
+          playSound('walk')
 
           return {
             ...prev,
@@ -669,6 +702,7 @@ export function GamePage() {
 
       if (response.isBomb) {
         showStatus('The king stepped on a trap!', 'error')
+        playSound('gameOver')
         setTimeout(() => {
           setGame(prev => ({ ...prev, foxState: 'death' }))
         }, 400)
