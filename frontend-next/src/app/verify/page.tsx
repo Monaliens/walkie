@@ -258,116 +258,183 @@ export default function VerifyPage() {
             </div>
             <div className="accordion-content open">
               
-              {/* Game Flow Sequence Diagram */}
+              {/* Horizontal Game Flow Timeline */}
               <div className="flow-section">
                 <h3 className="section-subtitle">Game Flow</h3>
-                <div className="sequence-diagram">
-                  {/* Actor Headers */}
-                  <div className="seq-actors">
-                    <div className="seq-actor player">PLAYER</div>
-                    <div className="seq-actor backend">BACKEND</div>
-                    <div className="seq-actor contract">CONTRACT</div>
-                    <div className="seq-actor pyth">PYTH RNG</div>
+
+                {/* Actor Legend */}
+                <div className="flow-legend">
+                  <div className="legend-actor player-actor">PLAYER</div>
+                  <div className="legend-actor backend-actor">BACKEND</div>
+                  <div className="legend-actor contract-actor">CONTRACT</div>
+                  <div className="legend-actor pyth-actor">PYTH VRF</div>
+                </div>
+
+                {/* Horizontal Timeline */}
+                <div className="h-timeline">
+                  {/* Phase 1: Setup */}
+                  <div className="timeline-phase setup-phase">
+                    <div className="phase-label">SETUP</div>
+                    <div className="phase-steps">
+                      {/* Step 1 */}
+                      <div className="h-step">
+                        <div className="step-icon player-bg">
+                          <span className="pixel-icon">P</span>
+                        </div>
+                        <div className="step-info">
+                          <span className="step-title">Prepare</span>
+                          <span className="step-desc">Request game</span>
+                        </div>
+                      </div>
+                      <div className="step-arrow"></div>
+
+                      {/* Step 2 */}
+                      <div className="h-step">
+                        <div className="step-icon backend-bg">
+                          <span className="pixel-icon">B</span>
+                        </div>
+                        <div className="step-info">
+                          <span className="step-title">Salt Hash</span>
+                          <span className="step-desc">keccak256(salt)</span>
+                        </div>
+                      </div>
+                      <div className="step-arrow arrow-to-contract"></div>
+
+                      {/* Step 3 */}
+                      <div className="h-step">
+                        <div className="step-icon backend-bg">
+                          <span className="pixel-icon">B</span>
+                        </div>
+                        <div className="step-info">
+                          <span className="step-title">Commit</span>
+                          <span className="step-desc">on-chain</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Vertical Lines */}
-                  <div className="seq-lifelines">
-                    <div className="lifeline player-line"></div>
-                    <div className="lifeline backend-line"></div>
-                    <div className="lifeline contract-line"></div>
-                    <div className="lifeline pyth-line"></div>
+                  {/* Phase 2: VRF */}
+                  <div className="timeline-phase vrf-phase">
+                    <div className="phase-label">VRF</div>
+                    <div className="phase-steps">
+                      {/* Step 4 */}
+                      <div className="h-step">
+                        <div className="step-icon player-bg">
+                          <span className="pixel-icon">P</span>
+                        </div>
+                        <div className="step-info">
+                          <span className="step-title">Start Game</span>
+                          <span className="step-desc">bet + VRF fee</span>
+                        </div>
+                      </div>
+                      <div className="step-arrow arrow-to-contract"></div>
+
+                      {/* Step 5 */}
+                      <div className="h-step">
+                        <div className="step-icon contract-bg">
+                          <span className="pixel-icon">C</span>
+                        </div>
+                        <div className="step-info">
+                          <span className="step-title">Request</span>
+                          <span className="step-desc">entropy()</span>
+                        </div>
+                      </div>
+                      <div className="step-arrow arrow-to-pyth"></div>
+
+                      {/* Step 6 */}
+                      <div className="h-step">
+                        <div className="step-icon pyth-bg">
+                          <span className="pixel-icon">V</span>
+                        </div>
+                        <div className="step-info">
+                          <span className="step-title">Callback</span>
+                          <span className="step-desc">vrfSeed</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Steps */}
-                  <div className="seq-steps">
-                    {/* Step 1 */}
-                    <div className="seq-step">
-                      <div className="step-num player-pos"><span className="seq-num green">1</span></div>
-                      <div className="step-content">
-                        <div className="step-label-above">prepare game</div>
-                        <div className="step-arrow-row arrow-1-2">
-                          <div className="arrow-line green-line"></div>
-                          <div className="arrow-head green-head right"></div>
+                  {/* Phase 3: Gameplay Loop */}
+                  <div className="timeline-phase gameplay-phase">
+                    <div className="phase-label">GAMEPLAY</div>
+                    <div className="phase-steps loop-container">
+                      {/* Step 7 */}
+                      <div className="h-step">
+                        <div className="step-icon backend-bg">
+                          <span className="pixel-icon">B</span>
+                        </div>
+                        <div className="step-info">
+                          <span className="step-title">Set Tiles</span>
+                          <span className="step-desc">bombBitmap</span>
                         </div>
                       </div>
-                    </div>
+                      <div className="step-arrow arrow-to-contract"></div>
 
-                    {/* Step 2 */}
-                    <div className="seq-step internal-step">
-                      <div className="step-num backend-pos"><span className="seq-num orange">2</span></div>
-                      <div className="step-internal-box">
-                        <span className="step-code">saltHash = keccak256(salt)</span>
+                      {/* Loop indicator */}
+                      <div className="loop-box">
+                        <div className="loop-label">REPEAT</div>
+                        <div className="loop-content">
+                          {/* Move */}
+                          <div className="h-step mini">
+                            <div className="step-icon player-bg small">
+                              <span className="pixel-icon">P</span>
+                            </div>
+                            <div className="step-info">
+                              <span className="step-title">Move</span>
+                            </div>
+                          </div>
+                          <div className="loop-arrow"></div>
+                          {/* Reveal */}
+                          <div className="h-step mini">
+                            <div className="step-icon backend-bg small">
+                              <span className="pixel-icon">B</span>
+                            </div>
+                            <div className="step-info">
+                              <span className="step-title">Reveal</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="loop-curve"></div>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Step 3 */}
-                    <div className="seq-step">
-                      <div className="step-num backend-pos"><span className="seq-num orange">3</span></div>
-                      <div className="step-content">
-                        <div className="step-label-above pos-contract">saltHash on-chain</div>
-                        <div className="step-arrow-row arrow-2-3">
-                          <div className="arrow-line orange-line"></div>
-                          <div className="arrow-head orange-head right"></div>
+                  {/* Phase 4: Finalize */}
+                  <div className="timeline-phase finalize-phase">
+                    <div className="phase-label">FINALIZE</div>
+                    <div className="phase-steps">
+                      {/* Step 8 */}
+                      <div className="h-step">
+                        <div className="step-icon backend-bg">
+                          <span className="pixel-icon">B</span>
+                        </div>
+                        <div className="step-info">
+                          <span className="step-title">Complete</span>
+                          <span className="step-desc">reveal salt</span>
                         </div>
                       </div>
-                    </div>
+                      <div className="step-arrow arrow-to-contract"></div>
 
-                    {/* Step 4 */}
-                    <div className="seq-step">
-                      <div className="step-num player-pos"><span className="seq-num green">4</span></div>
-                      <div className="step-content">
-                        <div className="step-label-above pos-contract">startGame() + VRF fee</div>
-                        <div className="step-arrow-row arrow-1-3">
-                          <div className="arrow-line green-line"></div>
-                          <div className="arrow-head green-head right"></div>
+                      {/* Step 9 */}
+                      <div className="h-step">
+                        <div className="step-icon contract-bg">
+                          <span className="pixel-icon">C</span>
+                        </div>
+                        <div className="step-info">
+                          <span className="step-title">Verify</span>
+                          <span className="step-desc">recalc</span>
                         </div>
                       </div>
-                    </div>
+                      <div className="step-arrow arrow-to-player"></div>
 
-                    {/* Step 5 */}
-                    <div className="seq-step">
-                      <div className="step-num contract-pos"><span className="seq-num purple">5</span></div>
-                      <div className="step-content">
-                        <div className="step-label-above pos-pyth">request VRF</div>
-                        <div className="step-arrow-row arrow-3-4">
-                          <div className="arrow-line purple-line"></div>
-                          <div className="arrow-head purple-head right"></div>
+                      {/* Final */}
+                      <div className="h-step final">
+                        <div className="step-icon player-bg">
+                          <span className="pixel-icon">$</span>
                         </div>
-                      </div>
-                    </div>
-
-                    {/* Step 6 */}
-                    <div className="seq-step">
-                      <div className="step-num contract-pos"><span className="seq-num blue">6</span></div>
-                      <div className="step-content">
-                        <div className="step-label-above pos-pyth">vrfSeed callback</div>
-                        <div className="step-arrow-row arrow-4-3 reverse">
-                          <div className="arrow-head blue-head left"></div>
-                          <div className="arrow-line blue-line"></div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Step 7 */}
-                    <div className="seq-step">
-                      <div className="step-num backend-pos"><span className="seq-num orange">7</span></div>
-                      <div className="step-content">
-                        <div className="step-label-above pos-contract">reveal salt + complete</div>
-                        <div className="step-arrow-row arrow-2-3">
-                          <div className="arrow-line orange-line"></div>
-                          <div className="arrow-head orange-head right"></div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Step 8 */}
-                    <div className="seq-step">
-                      <div className="step-num player-pos"><span className="seq-num purple">8</span></div>
-                      <div className="step-content">
-                        <div className="step-label-above pos-contract">verify &amp; payout</div>
-                        <div className="step-arrow-row arrow-3-1 reverse">
-                          <div className="arrow-head purple-head left"></div>
-                          <div className="arrow-line purple-line"></div>
+                        <div className="step-info">
+                          <span className="step-title">Payout</span>
+                          <span className="step-desc">MON</span>
                         </div>
                       </div>
                     </div>
