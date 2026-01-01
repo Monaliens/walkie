@@ -419,7 +419,7 @@ let nonceManager = null;
 // SYNC TX
 // ═══════════════════════════════════════════════════════════════
 
-async function sendSyncTx(functionName, args, gasLimit = 3000000, retries = 2) {
+async function sendSyncTx(functionName, args, gasLimit = 500000, retries = 2) {
   if (!viemWalletClient) throw new Error('Viem wallet client not initialized');
 
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -725,7 +725,7 @@ app.post('/api/game/prepare', async (req, res) => {
 
     
     try {
-      const result = await sendSyncTx('commitSaltHash', [player, backendSaltHash], 3000000);
+      const result = await sendSyncTx('commitSaltHash', [player, backendSaltHash], 500000);
       if (result.status !== 1) {
         return res.status(500).json({ success: false, error: 'Failed to commit salt on-chain' });
       }
@@ -849,7 +849,7 @@ app.post('/api/game/:gameId/reveal', async (req, res) => {
     console.log(`[Reveal] Game ${gameId}, Grid ${gridWidth}x${gridWidth}, Tile ${tileIdx}, Type: ${['EMPTY','BOMB','REWARD'][tileType]}, Finish: ${isFinishTile}`);
 
     try {
-      const result = await sendSyncTx('revealTile', [player, BigInt(gameId), tileIdx, tileType, reward], 3000000);
+      const result = await sendSyncTx('revealTile', [player, BigInt(gameId), tileIdx, tileType, reward], 500000);
       pendingReveals.delete(pendingKey);
 
       if (result.status === 1) {
@@ -863,7 +863,7 @@ app.post('/api/game/:gameId/reveal', async (req, res) => {
           const missedRewards = calculateMissedRewards(finalSeed, gameId, bombSet, game.start_tile, game.finish_tile, game.bet_amount, cachedRevealed, gridWidth);
 
           
-          sendSyncTx('completeGame', [BigInt(gameId), game.backend_salt, game.map_nonce || 0], 3000000)
+          sendSyncTx('completeGame', [BigInt(gameId), game.backend_salt, game.map_nonce || 0], 500000)
             .then(async () => {
               await db.completeGame(gameId, false, '0', Array.from(bombSet), []);
               broadcastToGame(gameId, {
@@ -899,7 +899,7 @@ app.post('/api/game/:gameId/reveal', async (req, res) => {
           const missedRewards = calculateMissedRewards(finalSeed, gameId, bombSet, game.start_tile, game.finish_tile, game.bet_amount, cachedRevealed, gridWidth);
 
           // Complete game on-chain (triggers payout)
-          sendSyncTx('completeGame', [BigInt(gameId), game.backend_salt, game.map_nonce || 0], 3000000)
+          sendSyncTx('completeGame', [BigInt(gameId), game.backend_salt, game.map_nonce || 0], 500000)
             .then(async () => {
               await db.completeGame(gameId, true, game.collected_reward || '0', Array.from(bombSet), []);
               broadcastToGame(gameId, {
