@@ -35,10 +35,10 @@ app.use(express.json());
 const PORT = process.env.PORT || 4322;
 const PRIORITY_FEE_VIEM = parseGwei('10');
 
-// Monad chain definition
+// Monad Testnet chain definition
 const monad = defineChain({
-  id: 143,
-  name: 'Monad',
+  id: 10143,
+  name: 'Monad Testnet',
   nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
   rpcUrls: {
     default: { http: [process.env.RPC_URL || 'https://rpc.monad.xyz'] }
@@ -555,7 +555,7 @@ app.post('/api/session', async (req, res) => {
       type: 'bombomb-session',
       player: player.toLowerCase(),
       timestamp,
-      chainId: 143
+      chainId: 10143
     });
 
     let recoveredAddress;
