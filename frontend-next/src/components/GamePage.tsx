@@ -1082,6 +1082,9 @@ export function GamePage() {
                     </button>
                   ))}
                 </div>
+                <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginTop: '6px', marginBottom: '-4px', textAlign: 'center' }}>
+                  min 0.01 · max 1
+                </div>
               </div>
 
               {/* Grid Info */}
