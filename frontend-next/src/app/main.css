@@ -946,18 +946,87 @@ appkit-button::part(button):active {
   opacity: 0.7;
 }
 
-/* Responsive */
+/* Responsive History */
 @media (max-width: 768px) {
+  .history-section .panel-title {
+    font-size: 10px;
+  }
+
+  .history-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .history-tabs {
+    width: 100%;
+  }
+
+  .history-tab {
+    flex: 1;
+    font-size: 8px;
+    padding: 8px 12px;
+  }
+
   .history-table-header,
   .history-row {
-    grid-template-columns: 60px 1fr 70px 60px;
+    grid-template-columns: 50px 60px 60px 36px;
+    gap: 6px;
+    padding: 8px 10px;
   }
-  
+
+  .history-table-header {
+    font-size: 9px;
+  }
+
+  .history-row {
+    font-size: 11px;
+  }
+
+  .history-grid-badge {
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+
+  .history-bet {
+    font-size: 11px;
+  }
+
+  .history-result-badge {
+    font-size: 8px;
+    padding: 2px 6px;
+  }
+
+  .history-action-btn {
+    width: 28px;
+    height: 28px;
+    padding: 4px;
+  }
+
+  .history-action-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
   .th-player,
   .history-player,
   .th-payout,
   .history-payout {
     display: none;
+  }
+
+  .history-pagination {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .pagination-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .pagination-info {
+    font-size: 10px;
   }
 }
 

@@ -890,29 +890,122 @@
 
 /* Responsive */
 @media (max-width: 700px) {
+  /* Hide Provably Fair badge on mobile */
+  .header-badge {
+    display: none;
+  }
+
   .h-timeline {
-    padding: 12px;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .flow-legend {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .legend-actor {
+    font-size: 6px;
+    padding: 4px 8px;
   }
 
   .timeline-phase {
-    flex-direction: column;
-    align-items: stretch;
+    padding: 8px;
+    gap: 8px;
   }
 
   .phase-label {
-    writing-mode: horizontal-tb;
-    transform: none;
-    text-align: left;
-    padding: 4px 0;
-    margin-bottom: 8px;
+    font-size: 6px;
+    min-width: 16px;
+    padding: 4px 2px;
   }
 
   .phase-steps {
-    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .h-step {
+    gap: 4px;
+  }
+
+  .step-icon {
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
+  }
+
+  .pixel-icon {
+    font-size: 9px;
+  }
+
+  .step-info {
+    min-width: 40px;
+  }
+
+  .step-title {
+    font-size: 7px;
+  }
+
+  .step-desc {
+    font-size: 8px;
   }
 
   .step-arrow {
-    width: 16px;
+    margin: 0 2px;
+  }
+
+  .step-arrow::before {
+    width: 12px;
+    height: 2px;
+  }
+
+  .step-arrow::after {
+    border-left-width: 6px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+  }
+
+  /* Loop box mobile */
+  .loop-box {
+    padding: 8px 10px;
+    margin-left: 4px;
+  }
+
+  .loop-label {
+    font-size: 6px;
+    padding: 1px 4px;
+    top: -8px;
+  }
+
+  .loop-content {
+    gap: 4px;
+  }
+
+  .step-icon.small {
+    width: 20px;
+    height: 20px;
+  }
+
+  .step-icon.small .pixel-icon {
+    font-size: 8px;
+  }
+
+  .h-step.mini .step-info {
+    min-width: 28px;
+  }
+
+  .h-step.mini .step-title {
+    font-size: 6px;
+  }
+
+  .loop-arrow {
+    width: 10px;
+  }
+
+  .loop-curve {
+    height: 8px;
+    bottom: -6px;
   }
 }
 
