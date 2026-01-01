@@ -752,9 +752,22 @@ export function GamePage() {
     }
 
     try {
+      // Validate bet amount
+      const betNum = parseFloat(game.betAmount)
+      if (isNaN(betNum) || betNum < 0.01) {
+        showStatus('Min bet: 0.01 MON', 'error')
+        isStartingGameRef.current = false
+        return
+      }
+      if (betNum > 1) {
+        showStatus('Max bet: 1 MON', 'error')
+        isStartingGameRef.current = false
+        return
+      }
+
       showStatus('Preparing path...', 'warning')
 
-      
+
       const prepareResponse = await api.prepareGame(game.gridSize)
       if (!prepareResponse.success) {
         throw new Error(prepareResponse.error || 'Failed to prepare')
