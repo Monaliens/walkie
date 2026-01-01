@@ -57,3 +57,5 @@ craftpix-net-*/
 
 # Deployment info (optional - remove if you want to track)
 # deployment.json
+backend/.env.testnet
+backend/.env.testnet
