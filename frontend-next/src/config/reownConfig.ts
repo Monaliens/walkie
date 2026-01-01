@@ -68,11 +68,8 @@ export const monadTestnet = defineChain({
 // Read Project ID from environment variables
 export const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID || ''
 
-// Check if testnet mode
-const isTestnet = process.env.NEXT_PUBLIC_NETWORK === 'testnet'
-
-// Define supported networks based on environment
-export const networks = isTestnet ? [monadTestnet] as any : [monadMainnet] as any
+// Hardcoded testnet mode
+export const networks = [monadTestnet] as any
 
 // Create the Wagmi adapter instance
 export const wagmiAdapter = new WagmiAdapter({

@@ -57,9 +57,8 @@ declare global {
   }
 }
 
-// Contract config
-// Contract address - configurable via env
-const CONTRACT_ADDRESS = (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x7f7B8135d5D4ba22d3acA7f40676Ba9D89FDe731') as `0x${string}`
+// Contract config - Testnet
+const CONTRACT_ADDRESS = '0xB842b4B9d13bBcf5dDd2a47741e6D1610E34D497' as `0x${string}`
 
 const CONTRACT_ABI = [
   {
