@@ -754,13 +754,13 @@ export function GamePage() {
     try {
       // Validate bet amount
       const betNum = parseFloat(game.betAmount)
-      if (isNaN(betNum) || betNum < 0.01) {
-        showStatus('Min bet: 0.01 MON', 'error')
+      if (isNaN(betNum) || betNum < 0.002) {
+        showStatus('Min bet: 0.002 MON', 'error')
         isStartingGameRef.current = false
         return
       }
-      if (betNum > 1) {
-        showStatus('Max bet: 1 MON', 'error')
+      if (betNum > 0.1) {
+        showStatus('Max bet: 0.1 MON', 'error')
         isStartingGameRef.current = false
         return
       }
@@ -1072,7 +1072,7 @@ export function GamePage() {
                   <span className="suffix">MON</span>
                 </div>
                 <div className="quick-btns">
-                  {['0.02', '0.03', '0.04', '0.05'].map((amt) => (
+                  {['0.01', '0.02', '0.05', '0.1'].map((amt) => (
                     <button
                       key={amt}
                       className="btn-quick"
@@ -1083,7 +1083,7 @@ export function GamePage() {
                   ))}
                 </div>
                 <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginTop: '6px', marginBottom: '-4px', textAlign: 'center' }}>
-                  min 0.01 · max 1
+                  min 0.002 · max 0.1
                 </div>
               </div>
 
