@@ -1,6 +1,6 @@
 # WALKIE
 
-**Provably Fair Tile-Reveal Game on Monad**
+**Provably Fair Tile-Reveal Game on Monad Testnet**
 
 Built for [Mission X: Verifiably Fair](https://x.com/monad_dev/status/1999134435938312343)
 
@@ -73,7 +73,7 @@ The catch? You can't see what's under a tile until you step on it. But here's th
 | 5x         | 2.5%   |
 | 10x        | 0.5%   |
 
-**Bet Range:** 0.1 - 10 MON
+**Bet Range:** 0.002 - 0.1 MON
 
 ## Tech Stack
 
@@ -82,13 +82,13 @@ The catch? You can't see what's under a tile until you step on it. But here's th
 - **Frontend:** Next.js 16, React 19, TypeScript
 - **Wallet:** Reown AppKit + Wagmi v2
 - **Backend:** Express.js, MongoDB, WebSocket
-- **Network:** Monad Mainnet (Chain ID: 143)
+- **Network:** Monad Testnet (Chain ID: 10143)
 
 ## Contract
 
-**Address:** `0x7f7B8135d5D4ba22d3acA7f40676Ba9D89FDe731`
+**Address:** `0xB842b4B9d13bBcf5dDd2a47741e6D1610E34D497`
 
-[View on Monad Explorer](https://monadexplorer.com/address/0x7f7B8135d5D4ba22d3acA7f40676Ba9D89FDe731)
+[View on Monad Testnet Explorer](https://testnet.monadexplorer.com/address/0xB842b4B9d13bBcf5dDd2a47741e6D1610E34D497)
 
 ## Why This Matters
 
@@ -114,7 +114,7 @@ cd frontend-next && npm run dev
 cd backend && npm run dev
 
 # Deploy contracts
-npx hardhat run scripts/deploy.js --network monad
+npx hardhat run scripts/deploy-testnet.js --network monad-testnet
 ```
 
 ## Team
@@ -123,4 +123,4 @@ Built by [Monaliens](https://monaliens.xyz)
 
 ---
 
-*Powered by Pyth Entropy VRF on Monad Mainnet*
+*Powered by Pyth Entropy VRF on Monad Testnet*
