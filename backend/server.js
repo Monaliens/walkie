@@ -666,6 +666,14 @@ app.get('/api/game/:gameId', async (req, res) => {
     }
 
     const gameObj = game.toObject();
+
+    // Hide sensitive data if game is not completed
+    if (game.phase !== 'completed') {
+      delete gameObj.bomb_positions;
+      delete gameObj.backend_salt;
+      delete gameObj.vrf_seed;
+    }
+
     if (allRewardTiles.length > 0) {
       gameObj.all_reward_tiles = allRewardTiles;
     }
